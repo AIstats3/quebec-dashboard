@@ -1,0 +1,247 @@
+/* General Layout */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 20px;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Tab Buttons */
+.tab-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tab-button{
+  padding: 10px 20px;
+  margin: 0 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.tab-button:hover {
+  background-color: #0056b3;
+}
+
+/* Tab Content Sections */
+.tab-content {
+  margin: 0 auto;
+  max-width: 1200px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Dropdowns */
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 10px 10px 20px 0;
+}
+
+.dropdown-button {
+  padding: 8px 14px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 10;
+  display: none;
+  padding: 10px;
+  max-height: 500px;
+  overflow-y: auto;
+  min-width: 200px;
+}
+
+.dropdown.show {
+  display: block;
+}
+
+.dropdown label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Submit Button */
+form button[type="submit"] {
+  margin: 10px 10px 20px 0;
+  padding: 8px 14px;
+  background-color: #28a745;
+  color: #eee;
+  border: 1px solid #28a746b5;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+form button [type="submit"]:hover {
+  background-color: #28a746b5;
+}
+
+/* Lineup table styles */
+.lineup-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #333;
+}
+
+.lineup-table thead th {
+  background-color: #003366;
+  color: #fff;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Row styles */
+.lineup-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.lineup-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Cell styles */
+.lineup-table td {
+  padding: 6px 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+/* Emphasize total row in Lineup table */
+.total-row td {
+  font-weight: bold;
+}
+
+.sort-btn {
+  margin-left: 5px;
+  font-size: 0.9em;
+  padding: 1px 6px;
+  cursor: pointer;
+}
+
+/* Lineup table styles */
+.box-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #333;
+}
+
+.box-table thead th {
+  background-color: #003366;
+  color: #fff;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Row styles */
+.box-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.box-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Cell styles */
+.box-table td {
+  padding: 6px 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  body {
+    margin: 10px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .tab-button {
+    font-size: 14px;
+    padding: 8px 12px;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .tab-content {
+    padding: 15px;
+  }
+
+  .dropdown-button {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  .dropdown {
+    min-width: 150px;
+    max-height: 200px;
+  }
+
+  form button[type="submit"] {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  .tab-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dropdown-wrapper {
+    width: 100%;
+  }
+
+  .dropdown-button {
+    width: 100%;
+  }
+
+  .tab-content {
+    padding: 10px;
+  }
+
+  .lineup-table, .box-table {
+    font-size: 12px;
+    min-width: 400px;
+  }
+
+  .sort-btn {
+    padding: 0 4px;
+  }
+}

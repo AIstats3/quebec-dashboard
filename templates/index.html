@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Quebec Stats Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+  <!-- <link rel="stylesheet" href="/static/dashboard.css"> -->
+</head>
+
+<body>
+  <h1>Quebec Analytics Dashboard</h1>
+  <div class="tab-container">
+    <button class="tab-button" data-tab="shooting-section">Shooting Stats</button>
+    <button class="tab-button" data-tab="lineup-section">Lineup Stats</button>
+    <button class="tab-button" data-tab="box-section">Box Score Stats</button>
+  </div>
+  <!--Shooting Section-->
+  <div id="shooting-section" class="tab-content">
+    <h2>Shooting</h2>
+    <form id="shooting-form">
+      <div class="dropdown-wrapper">
+        <!-- Game Filter -->
+        <button type="button" id="shootingGameDropdownToggle" class="dropdown-button">Select Games &#9660;</button>
+        <div id="shootingGameDropdown" class="dropdown">
+          <label><input type="checkbox" id="shootingGameSelectAll"> <strong>Select All</strong></label><br>
+          {% for file in game_files %}
+          <label><input type="checkbox" name="game" value="{{ file }}">{{ file.replace('.csv', '')
+            }}</label><br>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="dropdown-wrapper">
+        <!-- Player Filter -->
+        <button type="button" id="shootingPlayerDropdownToggle" class="dropdown-button">Select Player &#9660;</button>
+        <div id="shootingPlayerDropdown" class="dropdown">
+          <label>
+            <input type="checkbox" name="player" value="All Quebec">
+            All Quebec
+          </label>
+          <label>
+            <input type="checkbox" name="player" value="All Opponent">
+            Opponent
+          </label>
+          {% for number in player_numbers %}
+          <label>
+            <input type="checkbox" name="player" value="{{ number }}">
+            {{ player_number_dict[number] }} ({{ number }})
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="shooting-figure"></div>
+  </div>
+
+  <!--Lineup Section-->
+  <div id="lineup-section" class="tab-content" style="display: none;">
+    <h2>Lineup</h2>
+    <form id="lineup-form">
+      <div class="dropdown-wrapper">
+        <!-- Game Filter -->
+        <button type="button" id="lineupGameDropdownToggle" class="dropdown-button">Select Games &#9660;</button>
+        <div id="lineupGameDropdown" class="dropdown">
+          <label><input type="checkbox" id="lineupGameSelectAll"> <strong>Select All</strong></label><br>
+          {% for file in game_files %}
+          <label><input type="checkbox" name="game" value="{{ file }}">{{ file.replace('.csv', '')
+            }}</label><br>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="dropdown-wrapper">
+        <!-- Player Filter -->
+        <button type="button" id="lineupPlayerDropdownToggle" class="dropdown-button">Select Player &#9660;</button>
+        <div id="lineupPlayerDropdown" class="dropdown">
+          {% for number in player_numbers %}
+          <label>
+            <input type="checkbox" name="player" value="{{ number }}">
+            {{ player_number_dict[number] }} ({{ number }})
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      <button type="submit">Submit</button>
+
+    </form>
+    <div class="table-wrapper">
+      <table id="lineup-table" class="lineup-table"></table>
+    </div>
+  </div>
+  <!--Box Score Section-->
+  <div id="box-section" class="tab-content" style="display: none;">
+    <h2>Box Score</h2>
+    <form id="box-form">
+      <div class="dropdown-wrapper">
+        <!-- Game Filter -->
+        <button type="button" id="boxGameDropdownToggle" class="dropdown-button">Select Games &#9660;</button>
+        <div id="boxGameDropdown" class="dropdown">
+          <label><input type="checkbox" id="boxGameSelectAll"> <strong>Select All</strong></label><br>
+          {% for file in game_files %}
+          <label><input type="checkbox" name="game" value="{{ file }}">{{ file.replace('.csv', '')
+            }}</label><br>
+          {% endfor %}
+        </div>
+      </div>
+      <button type="submit">Submit</button>
+
+    </form>
+    <div class="table-wrapper">
+      <table id="box-table" class="box-table"></table>
+    </div>
+  </div>
+
+
+
+  <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+  <!-- <script src="/static/dashboard.js"></script> -->
+</body>
+
+</html>
