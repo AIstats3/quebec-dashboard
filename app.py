@@ -57,6 +57,7 @@ def get_lineup_data():
       df['lineup'] = df['lineup'].apply(
         lambda x: ast.literal_eval(x) if isinstance(x, str) and x.startswith("[") else x
       )
+      df['game'] = game
       dataframes.append(df)
     except Exception as e:
       app.logger.error(f"Failed to load or parse {rotation_df_filename}: {e}")
@@ -96,7 +97,9 @@ def get_lineup_data():
 def get_shooting_fig():
   try:
     selected_games = request.json.get("games", [])
-    selected_players = request.json.get("players", [])
+    selected_players = request.json.get("players")
+    if not selected_players:
+      selected_players = ['All Quebec']
   except:
     return jsonify({"error":"Invalid input format"}), 400
   
@@ -105,6 +108,7 @@ def get_shooting_fig():
     full_path = os.path.join(game_files_dir, game)
     if os.path.exists(full_path):
       df = pd.read_csv(full_path, dtype={'player':'string'})
+      df['game'] = game
       dataframes.append(df)
     else:
       print(f"File not found: {full_path}")
@@ -119,7 +123,7 @@ def get_shooting_fig():
   if selected_players:
     print(selected_players)
     if 'All Quebec' in selected_players:
-      combined = combined[~combined['player'].str.startswith('-')]
+      combined = combined[(~combined['player'].str.startswith('-')) & (combined['event'] != 'sub')]
     elif 'All Opponent' in selected_players:
       combined = combined[combined['player'].str.startswith('-')]
     else:
@@ -128,10 +132,18 @@ def get_shooting_fig():
     return jsonify({"error": "No data found for selected filters"}), 400
   
 
+  TO = len(combined[combined['event'] == 'TO'])
+  points = 0
+  for i, row in combined.iterrows():
+    points += get_points(row['event'])
+  possessions = len(combined['possession_id'].unique())
+  ortg = round(points / possessions, 2)
   shooting_data = get_shot_zone_stats(combined)
+
 
   fig, ax = plt.subplots(figsize=(10,8))
   annotate_shot_zones(shooting_data, ax)
+  ax.set_title(f"{ortg} PTS/poss, {TO} TO")
 
   buf = io.BytesIO()
   fig.savefig(buf, format='png')
@@ -160,6 +172,7 @@ def get_box_data():
     try:
       ##Load file if it exists
       df = pd.read_csv(full_path, dtype={'player':'string'})
+      df['game'] = game
       dataframes.append(df)
     except Exception as e:
       app.logger.error(f"Failed to load or parse {box_score_filename}: {e}")
@@ -193,9 +206,12 @@ def get_box_data():
   output_df = pd.concat([pd.DataFrame([total_row]), combined_box], ignore_index=True)
 
   output_df['Minutes'] = output_df['Minutes'].apply(minutes_to_time_format)
-  output_df = output_df[['player', 'pts', 'FG', 'FGA', '3FG', '3FGA', 'FT', 'FTA',
-                         'treb', 'oreb', 'dreb', 'ast', 'stl', 'blk', 'TO', 'foul',
-                         '+/-','Minutes']]
+  output_df['FG%'] = round(output_df['FG'] / output_df['FGA'],2)
+  output_df['3FG%'] = round(output_df['3FG'] / output_df['3FGA'],2)
+  output_df['FT%'] = round(output_df['FT'] / output_df['FTA'],2)
+  output_df = output_df[['player', 'pts', 'FG', 'FGA', 'FG%','3FG', '3FGA', '3FG%', 'FT',
+                          'FTA', 'FT%', 'treb', 'oreb', 'dreb', 'ast', 'stl', 'blk', 'TO',
+                          'foul', '+/-','Minutes']]
   return output_df.to_json(orient='records')
   
 

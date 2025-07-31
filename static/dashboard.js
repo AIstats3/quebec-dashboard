@@ -73,7 +73,7 @@ function renderTable(data, tableId) {
 
     // Add sort button for specific columns
     const sortableColumns = ['oreb', 'dreb', 'ast', 'blk', 'stl', 'foul', 'treb', 'pts',
-       'FG', 'FGA', '3FG', '3FGA', 'FT', 'FTA', 'TO', '+/-', 'Minutes']
+       'FG', 'FGA', '3FG', '3FGA', 'FT', 'FTA', 'TO', '+/-', 'Minutes', 'FG%','3FG%','FT%']
     if (sortableColumns.includes(col) || sortableColumns.includes(col.toLowerCase())) {
       const sortBtn = document.createElement('button');
       sortBtn.textContent = '↕';
