@@ -4,6 +4,7 @@ player_number_dict = {
   '3':'Daven Larosilière',
   '4':'Desmond Luboya',
   '5':'Félix Légaré',
+  '6':'Joshua Charlotin',
   '7':'Micke Mera',
   '8':'Antonny Peraze Blais',
   '9':'Gaël Bilodeau',

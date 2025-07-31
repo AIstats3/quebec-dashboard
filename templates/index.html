@@ -104,6 +104,14 @@
           {% endfor %}
         </div>
       </div>
+      <div class="dropdown-wrapper">
+        <!-- Format Filter -->
+        <button type="button" id="boxFormatDropdownToggle" class="dropdown-button">Averages/Totals &#9660;</button>
+        <div id="boxFormatDropdown" class="dropdown">
+          <label><input type="radio" name="format" value="totals">Totals</label>
+          <label><input type="radio" name="format" value="averages">Averages</label>
+        </div>
+      </div>
       <button type="submit">Submit</button>
 
     </form>

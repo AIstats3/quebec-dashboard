@@ -87,6 +87,7 @@ def get_lineup_data():
   total_row = {'lineup':'Total','Shift_length':output_df['Shift_length'].sum(), '+/-':output_df['+/-'].sum()}
   output_df = pd.concat([pd.DataFrame([total_row]), output_df], ignore_index=True)
   output_df['Shift_length'] = output_df['Shift_length'].apply(minutes_to_time_format)
+  output_df = output_df.rename(columns={'Shift_length':'Minutes'})
 
   return output_df.to_json(orient="records")
 
@@ -145,6 +146,7 @@ def get_box_data():
   ##Input validation
   try:
     selected_games = request.json.get("games", [])
+    selected_format = request.json.get("format", "totals")
   except:
     return jsonify({"error":"Invalid input format"}), 400
   
@@ -157,21 +159,45 @@ def get_box_data():
       continue
     try:
       ##Load file if it exists
-      df = pd.read_csv(full_path)
+      df = pd.read_csv(full_path, dtype={'player':'string'})
       dataframes.append(df)
     except Exception as e:
       app.logger.error(f"Failed to load or parse {box_score_filename}: {e}")
 
   ##Combine data
   combined_df = pd.concat(dataframes, ignore_index=True)
+  combined_df['player'] = combined_df['player'].apply(lambda x: f'{player_number_dict[x]}({x})')
 
-  combined_box = combined_df.groupby('player').sum()
-  combined_box = combined_box.reset_index()
-  combined_box['Minutes'] = combined_box['Minutes'].apply(minutes_to_time_format)
-  combined_box = combined_box.iloc[:, [0,17,8,9,10,11,12,13,14,7,1,2,3,4,5,6,15,16]]
-  return combined_box.to_json(orient='records')
+  if selected_format == "totals":
+    combined_box = combined_df.groupby('player').sum()
+    combined_box = combined_box.reset_index()
+  if selected_format == "averages":
+    combined_box = combined_df.groupby('player').mean().round(2)
+    combined_box = combined_box.reset_index()
+    
+  ##Create a row to represent totals and add it to top of dataframe
+  total_row = dict(combined_box[['oreb', 'dreb', 'ast', 'blk', 'stl', 'foul', 'treb', 'pts',
+       'FG', 'FGA', '3FG', '3FGA', 'FT', 'FTA', 'TO', '+/-', 'Minutes']].sum())
+  total_row['player'] = 'total'
+  ##Need a special total row for averages since not every player plays every game, 
+  ##We want it to reflect team average over selected games
+  if selected_format == 'averages':
+    total_row = dict((combined_df.groupby('player').sum().reset_index()[['oreb', 'dreb', 'ast', 'blk', 'stl', 'foul', 'treb', 'pts',
+       'FG', 'FGA', '3FG', '3FGA', 'FT', 'FTA', 'TO', '+/-', 'Minutes']].sum()/len(selected_games)).round(2))
+    total_row['player'] = 'total'
+  ##Need to adjust +/- and Minutes to reflect that 5 players are on the floor
+  total_row['+/-'] = total_row['+/-']/5
+  total_row['Minutes'] = total_row['Minutes']/5
+
   
+  output_df = pd.concat([pd.DataFrame([total_row]), combined_box], ignore_index=True)
 
+  output_df['Minutes'] = output_df['Minutes'].apply(minutes_to_time_format)
+  output_df = output_df[['player', 'pts', 'FG', 'FGA', '3FG', '3FGA', 'FT', 'FTA',
+                         'treb', 'oreb', 'dreb', 'ast', 'stl', 'blk', 'TO', 'foul',
+                         '+/-','Minutes']]
+  return output_df.to_json(orient='records')
+  
 
 
 if __name__ == '__main__':

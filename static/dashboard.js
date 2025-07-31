@@ -72,7 +72,9 @@ function renderTable(data, tableId) {
     th.textContent = col;
 
     // Add sort button for specific columns
-    if (col === '+/-' || col.toLowerCase().includes('shift')) {
+    const sortableColumns = ['oreb', 'dreb', 'ast', 'blk', 'stl', 'foul', 'treb', 'pts',
+       'FG', 'FGA', '3FG', '3FGA', 'FT', 'FTA', 'TO', '+/-', 'Minutes']
+    if (sortableColumns.includes(col) || sortableColumns.includes(col.toLowerCase())) {
       const sortBtn = document.createElement('button');
       sortBtn.textContent = '↕';
       sortBtn.classList.add('sort-btn');
@@ -133,7 +135,7 @@ function sortTableByColumn(tableId, columnName) {
 
   // Custom parser for Shift_length column
   const parseValue = (text) => {
-    if (columnName === 'Shift_length') {
+    if (columnName === 'Minutes') {
       return parseDuration(text.trim());
     } else {
       return parseFloat(text.trim()) || 0;
@@ -211,12 +213,13 @@ function handleBoxFormSubmission(form, tableDiv) {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const selectedFiles = Array.from(form.querySelectorAll('input[name="game"]:checked')).map(cb => cb.value);
-
+    const selectedFormat = form.querySelector('input[name="format"]:checked')?.value;
     const response = await fetch('/get_box_data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        games: selectedFiles
+        games: selectedFiles,
+        format: selectedFormat
       })
     });
     const data = await response.json();
@@ -277,6 +280,11 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleDropdown(boxGameDropdownToggle, boxGameDropdown);
   handleSelectAll(boxGameSelectAll, boxGameDropdown);
   closeDropdownOnOutsideClick(boxGameDropdownToggle, boxGameDropdown)
+
+  const boxFormatDropdownToggle = document.getElementById('boxFormatDropdownToggle');
+  const boxFormatDropdown = document.getElementById('boxFormatDropdown');
+  toggleDropdown(boxFormatDropdownToggle, boxFormatDropdown)
+  closeDropdownOnOutsideClick(boxFormatDropdownToggle, boxFormatDropdown)
 
 
   
