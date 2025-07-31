@@ -75,11 +75,41 @@
           </label>
           {% for number in player_numbers %}
           <label>
-            <input type="radio" name="player" value="{{ number }}">
+            <input type="checkbox" name="player" value="{{ number }}">
             {{ player_number_dict[number] }} ({{ number }})
           </label>
           {% endfor %}
         </div>
+      </div>
+      <div class="dropdown-wrapper">
+        <!-- Set Filter -->
+         <button type="button" id="shootingSetDropdownToggle" class="dropdown-button">Select Set &#9660;</button>
+         <div id="shootingSetDropdown" class="dropdown">
+          <label>
+            <input type="checkbox" name="set" value="motion">
+            Motion
+          </label>
+          <label>
+            <input type="checkbox" name="set" value="wheel">
+            Wheel
+          </label>
+          <label>
+            <input type="checkbox" name="set" value="flip">
+            "Down"
+          </label>
+          <label>
+            <input type="checkbox" name="set" value="transition">
+            Transition
+          </label>
+          <label>
+            <input type="checkbox" name="set" value="zone">
+            Zone Defense
+          </label>
+          <label>
+            <input type="checkbox" name="set" value="man">
+            Man Defense
+          </label>
+         </div>
       </div>
       <button type="submit">Submit</button>
     </form>

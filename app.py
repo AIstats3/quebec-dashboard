@@ -97,9 +97,8 @@ def get_lineup_data():
 def get_shooting_fig():
   try:
     selected_games = request.json.get("games", [])
-    selected_players = request.json.get("players")
-    if not selected_players:
-      selected_players = ['All Quebec']
+    selected_players = request.json.get("players", [])
+    selected_set = request.json.get("set", [])
   except:
     return jsonify({"error":"Invalid input format"}), 400
   
@@ -128,6 +127,13 @@ def get_shooting_fig():
       combined = combined[combined['player'].str.startswith('-')]
     else:
       combined = combined[combined['player'].isin(selected_players)]
+  
+  if selected_set:
+    if selected_set == "flip":
+      combined = combined[combined['additional_tags'].str.contains(selected_set).fillna(False)]
+    else:
+      combined = combined[combined['set'].str.contains(selected_set).fillna(False)]
+  
   if combined.empty:
     return jsonify({"error": "No data found for selected filters"}), 400
   
@@ -138,12 +144,13 @@ def get_shooting_fig():
     points += get_points(row['event'])
   possessions = len(combined['possession_id'].unique())
   ortg = round(points / possessions, 2)
+  TO_rate = round(TO/possessions, 2)
   shooting_data = get_shot_zone_stats(combined)
 
 
   fig, ax = plt.subplots(figsize=(10,8))
   annotate_shot_zones(shooting_data, ax)
-  ax.set_title(f"{ortg} PTS/poss, {TO} TO")
+  ax.set_title(f"{ortg} PTS/poss, {TO} TO, {TO_rate} TO%")
 
   buf = io.BytesIO()
   fig.savefig(buf, format='png')

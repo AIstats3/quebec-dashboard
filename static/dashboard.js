@@ -181,16 +181,18 @@ function handleShootingFormSubmission(form, figureDiv) {
 
     const selectedFiles = Array.from(form.querySelectorAll('input[name="game"]:checked')).map(cb => cb.value);
     const selectedPlayers = Array.from(form.querySelectorAll('input[name="player"]:checked')).map(cb => cb.value);
+    const selectedSet = form.querySelector('input[name="set"]:checked')?.value;
 
     const response = await fetch('/get_shooting_fig', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         games: selectedFiles,
-        players: selectedPlayers
+        players: selectedPlayers,
+        set: selectedSet
       })
     });
-    console.log("Sending:", {games: selectedFiles, players: selectedPlayers})
+    console.log("Sending:", {games: selectedFiles, players: selectedPlayers, set: selectedSet})
     const data = await response.json()
     console.log(data)
 
@@ -203,7 +205,7 @@ function handleShootingFormSubmission(form, figureDiv) {
       figureDiv.innerHTML = ''
       figureDiv.appendChild(img)
     } else {
-      figureDiv.innerHTML = `<p style="color:red">Error loading figure</p>`;
+      figureDiv.innerHTML = `<p style="color:red">Error loading figure - Check filters</p>`;
     }
   });
 }
@@ -252,6 +254,11 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleDropdown(shootingPlayerDropdownToggle, shootingPlayerDropdown);
   closeDropdownOnOutsideClick(shootingPlayerDropdownToggle, shootingPlayerDropdown)
 
+  const shootingSetDropdownToggle = document.getElementById('shootingSetDropdownToggle')
+  const shootingSetDropdown = document.getElementById('shootingSetDropdown')
+  toggleDropdown(shootingSetDropdownToggle, shootingSetDropdown)
+  closeDropdownOnOutsideClick(shootingSetDropdownToggle, shootingSetDropdown)
+
   //Lineup tab
   const lineupForm = document.getElementById('lineup-form');
   const lineupTableDiv = 'lineup-table';
@@ -285,9 +292,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const boxFormatDropdown = document.getElementById('boxFormatDropdown');
   toggleDropdown(boxFormatDropdownToggle, boxFormatDropdown)
   closeDropdownOnOutsideClick(boxFormatDropdownToggle, boxFormatDropdown)
-
-
-  
 
 
 })
