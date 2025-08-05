@@ -142,7 +142,7 @@ def get_shooting_fig():
   points = 0
   for i, row in combined.iterrows():
     points += get_points(row['event'])
-  possessions = len(combined['possession_id'].unique())
+  possessions = len(combined[['possession_id', 'game']].drop_duplicates())
   ortg = round(points / possessions, 2)
   TO_rate = round(TO/possessions, 2)
   shooting_data = get_shot_zone_stats(combined)
