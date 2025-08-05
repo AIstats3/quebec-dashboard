@@ -150,7 +150,7 @@ def get_shooting_fig():
 
   fig, ax = plt.subplots(figsize=(10,8))
   annotate_shot_zones(shooting_data, ax)
-  ax.set_title(f"{possessions} Possessions ,{ortg} PTS/poss, {TO} TO, {TO_rate} TO%")
+  ax.set_title(f"{possessions} Possessions, {ortg} PTS/poss, {TO} TO, {TO_rate} TO%")
 
   buf = io.BytesIO()
   fig.savefig(buf, format='png')
@@ -179,7 +179,7 @@ def get_box_data():
     try:
       ##Load file if it exists
       df = pd.read_csv(full_path, dtype={'player':'string'})
-      df['game'] = game
+      # df['game'] = game
       dataframes.append(df)
     except Exception as e:
       app.logger.error(f"Failed to load or parse {box_score_filename}: {e}")
