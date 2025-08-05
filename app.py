@@ -150,7 +150,7 @@ def get_shooting_fig():
 
   fig, ax = plt.subplots(figsize=(10,8))
   annotate_shot_zones(shooting_data, ax)
-  ax.set_title(f"{ortg} PTS/poss, {TO} TO, {TO_rate} TO%")
+  ax.set_title(f"{possessions} Possessions ,{ortg} PTS/poss, {TO} TO, {TO_rate} TO%")
 
   buf = io.BytesIO()
   fig.savefig(buf, format='png')
@@ -224,4 +224,5 @@ def get_box_data():
 
 
 if __name__ == '__main__':
-  app.run(debug=True, port=5050)
+  port = int(os.environ.get("PORT", 5050))
+  app.run(host="0.0.0.0", port=port, debug=True)
